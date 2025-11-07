@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://cp2tbo36neflq"]
+
+[ext_resource type="Script" uid="uid://iyw5uys78hwt" path="res://scenes/ui/debug/bank_panel.gd" id="1_eiqd4"]
+
+[node name="BankPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_eiqd4")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NameEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Agent Name"
+alignment = 1
+
+[node name="CreateAgentBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Create Agent + acct 50$"
+
+[node name="DepositBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Deposit 10$"
+
+[node name="WithdrawBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Withdraw 10$"
+
+[node name="Out" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[connection signal="pressed" from="VBoxContainer/CreateAgentBtn" to="." method="_on_create_agent_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/DepositBtn" to="." method="_on_deposit_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/WithdrawBtn" to="." method="_on_withdraw_btn_pressed"]

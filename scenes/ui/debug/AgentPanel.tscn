@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://hwj61cdxyf5t"]
+
+[ext_resource type="Script" uid="uid://b46lebpri6f4l" path="res://scenes/ui/debug/agent_panel.gd" id="1_iqpxp"]
+
+[node name="AgentPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iqpxp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CreateBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Créer agent 'Alice'"
+
+[node name="NameEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Nom Agent"
+alignment = 1
+
+[node name="ShowBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Afficher par ID"
+
+[node name="IdEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+placeholder_text = "agent_id"
+alignment = 1
+
+[node name="Out" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[connection signal="pressed" from="VBoxContainer/CreateBtn" to="." method="_on_create_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/ShowBtn" to="." method="_on_show_btn_pressed"]

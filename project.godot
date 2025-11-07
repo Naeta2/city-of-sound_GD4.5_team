@@ -1,0 +1,26 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="City of Sound"
+run/main_scene="uid://d26tut84w58hm"
+config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+IdService="*res://autoload/IdService.gd"
+AgentRepo="*res://autoload/AgentRepo.gd"
+EconomyService="*res://autoload/EconomyService.gd"
+SkillsService="*res://autoload/SkillsService.gd"
+TimeService="*res://autoload/TimeService.gd"
+Scheduler="*res://autoload/Scheduler.gd"
+PresenceService="*res://autoload/PresenceService.gd"

@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdir0vj7v6k12"]
+
+[ext_resource type="Script" uid="uid://ds5j5gfj1pcht" path="res://scenes/ui/debug/id_panel.gd" id="1_evejp"]
+
+[node name="IdPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_evejp")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GenBtn" type="Button" parent="PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Create_3_ID"
+metadata/_edit_use_anchors_ = true
+
+[node name="Out" type="Label" parent="PanelContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="PanelContainer/GenBtn" to="." method="_on_gen_btn_pressed"]

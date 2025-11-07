@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://44atvkp4la8b"]
+
+[ext_resource type="Script" uid="uid://c70lskggmqaw7" path="res://scenes/ui/debug/travel_panel.gd" id="1_o87rw"]
+
+[node name="TravelPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o87rw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AgentIdEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+placeholder_text = "agent_id"
+alignment = 1
+
+[node name="PlaceIdEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+text = "venue:petit_club"
+placeholder_text = "place_id"
+alignment = 1
+
+[node name="DepartInSpin" type="SpinBox" parent="VBoxContainer"]
+layout_mode = 2
+max_value = 1440.0
+value = 30.0
+prefix = "depart in"
+suffix = "min"
+
+[node name="DurationSpin" type="SpinBox" parent="VBoxContainer"]
+layout_mode = 2
+max_value = 720.0
+value = 50.0
+prefix = "travel duration :"
+suffix = "min"
+
+[node name="ScheduleTravelBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Schedule Travel"
+
+[node name="Out" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[connection signal="pressed" from="VBoxContainer/ScheduleTravelBtn" to="." method="_on_schedule_travel_btn_pressed"]

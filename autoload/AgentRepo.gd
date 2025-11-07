@@ -16,6 +16,7 @@ func create_agent(agent_name: String) -> StringName:
 		"account_id": StringName(),
 		"skills": {"guitar": 0.2},
 		"needs": {"energy": 70, "hunger": 30},
+		"status": &"healthy"
 	}
 	emit_signal("agent_created", id)
 	return id
@@ -40,4 +41,28 @@ func get_ag_skill(agent_id:StringName, skill: StringName) -> float :
 func set_ag_skill(agent_id:StringName, skill: StringName, value: float) -> void:
 	if not _agents.has(agent_id): return
 	_agents[agent_id]["skills"][skill] = clampf(value,0.0,1.0)
+	emit_signal("agent_changed", agent_id)
+
+func get_all_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for k in _agents.keys():
+		ids.append(k)
+	return ids
+
+func get_ag_need(agent_id: StringName, need: StringName) -> float:
+	if not _agents.has(agent_id): return 0.0
+	return float(_agents[agent_id]["needs"].get(need,0.0))
+
+func set_ag_need(agent_id: StringName, need: StringName, value: float) -> void:
+	if not _agents.has(agent_id): return
+	_agents[agent_id]["needs"][need] = clampf(value, 0.0, 100.0)
+	emit_signal("agent_changed", agent_id)
+
+func get_ag_status(agent_id: StringName) -> StringName:
+	if not _agents.has(agent_id): return &"healthy"
+	return StringName(_agents[agent_id].get("status", &"healthy"))
+
+func set_ag_status(agent_id: StringName, status: StringName) -> void:
+	if not _agents.has(agent_id): return
+	_agents[agent_id]["status"] = status
 	emit_signal("agent_changed", agent_id)

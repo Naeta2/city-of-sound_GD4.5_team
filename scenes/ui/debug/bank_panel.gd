@@ -5,6 +5,7 @@ extends Control
 
 var _agent_id: StringName
 var _acct_id: StringName
+var home_id: StringName
 
 func _on_create_agent_btn_pressed() -> void:
 	var agent_name := name_edit.text.strip_edges()
@@ -12,6 +13,7 @@ func _on_create_agent_btn_pressed() -> void:
 	_agent_id = AgentRepo.create_agent(agent_name)
 	_acct_id = EconomyService.create_account(50)
 	AgentRepo.set_account(_agent_id, _acct_id)
+	PresenceService.set_location(_agent_id, home_id)
 	_print_status("Créé agent=%s, compte=%s, solde=%d" % [_agent_id, _acct_id, EconomyService.get_balance(_acct_id)])
 
 func _on_deposit_btn_pressed() -> void:

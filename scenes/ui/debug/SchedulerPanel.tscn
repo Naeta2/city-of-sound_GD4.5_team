@@ -48,13 +48,28 @@ value = 60.0
 prefix = "for"
 suffix = "min"
 
-[node name="ScheduleBtn" type="Button" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="ScheduleBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Plan Practice"
 
-[node name="SchedGigBtn" type="Button" parent="VBoxContainer"]
+[node name="SchedGigBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Plan Gig"
+
+[node name="EatBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Eat"
+
+[node name="SleepBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sleep"
 
 [node name="TpToVenueBtn" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -64,6 +79,8 @@ text = "Teleport to Venue"
 layout_mode = 2
 size_flags_vertical = 3
 
-[connection signal="pressed" from="VBoxContainer/ScheduleBtn" to="." method="_on_schedule_btn_pressed"]
-[connection signal="pressed" from="VBoxContainer/SchedGigBtn" to="." method="_on_sched_gig_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ScheduleBtn" to="." method="_on_schedule_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/SchedGigBtn" to="." method="_on_sched_gig_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/EatBtn" to="." method="_on_eat_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/SleepBtn" to="." method="_on_sleep_btn_pressed"]
 [connection signal="pressed" from="VBoxContainer/TpToVenueBtn" to="." method="_on_tp_to_venue_btn_pressed"]

@@ -37,6 +37,20 @@ func _process(delta: float) -> void:
 			_last_hour = h
 			emit_signal("hour_changed", d, h)
 
+func dump() -> Dictionary:
+	return {
+		"abs_minutes": abs_minutes,
+		"speed": speed,
+		"paused": paused
+	}
+
+func restore(d: Dictionary) -> void:
+	abs_minutes = int(d.get("abs_minutes", 0))
+	speed = float(d.get("speed", speed))
+	paused = bool(d.get("paused", paused))
+	_last_day = get_day()
+	_last_hour = get_hour()
+
 # -- helpers
 
 func get_day() -> int :

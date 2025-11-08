@@ -6,6 +6,15 @@ signal transfer_done(from_id: StringName, to_id: StringName, amount: int, reason
 var _balances: Dictionary = {} #account_id -> int
 var _exists: Dictionary = {} #account_id -> bool
 
+func dump() -> Dictionary:
+	return {"balances": _balances.duplicate(), "exists": _exists.duplicate()}
+
+func restore(d: Dictionary) -> void:
+	_balances = d.get("balances", {}).duplicate()
+	_exists = d.get("exists", {}).duplicate()
+	for id in _balances.keys():
+		emit_signal("account_changed", id, int(_balances[id]))
+
 func create_account(initial:int=0, account_id:StringName=StringName()) -> StringName:
 	var acct := account_id if account_id != StringName() else IdService.new_id("acct")
 	_balances[acct] = initial

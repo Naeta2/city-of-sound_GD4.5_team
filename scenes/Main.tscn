@@ -1,13 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://d26tut84w58hm"]
+[gd_scene load_steps=9 format=3 uid="uid://d26tut84w58hm"]
 
 [ext_resource type="PackedScene" uid="uid://bdir0vj7v6k12" path="res://scenes/ui/debug/IdPanel.tscn" id="1_elqb8"]
+[ext_resource type="Script" uid="uid://cisoijx1xo6he" path="res://scenes/main.gd" id="1_jlsqs"]
 [ext_resource type="PackedScene" uid="uid://hwj61cdxyf5t" path="res://scenes/ui/debug/AgentPanel.tscn" id="2_rvslj"]
 [ext_resource type="PackedScene" uid="uid://cp2tbo36neflq" path="res://scenes/ui/debug/BankPanel.tscn" id="3_0bbpv"]
 [ext_resource type="PackedScene" uid="uid://cr5kmcmjsfmox" path="res://scenes/ui/debug/SkillsPanel.tscn" id="4_rarhs"]
 [ext_resource type="PackedScene" uid="uid://cgwi83k45on8g" path="res://scenes/ui/debug/SchedulerPanel.tscn" id="5_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://44atvkp4la8b" path="res://scenes/ui/debug/TravelPanel.tscn" id="6_c01mt"]
+[ext_resource type="PackedScene" uid="uid://k43odqg8kln3" path="res://scenes/ui/debug/SavePanel.tscn" id="7_nxtc6"]
 
 [node name="Main" type="Node"]
+script = ExtResource("1_jlsqs")
 
 [node name="DebugUI" type="Control" parent="."]
 layout_mode = 3
@@ -27,11 +30,13 @@ grow_vertical = 2
 columns = 3
 
 [node name="IdPanel" parent="DebugUI/GridContainer" instance=ExtResource("1_elqb8")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="BankPanel" parent="DebugUI/GridContainer" instance=ExtResource("3_0bbpv")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -48,6 +53,13 @@ size_flags_vertical = 3
 
 [node name="SchedulerPanel" parent="DebugUI/GridContainer" instance=ExtResource("5_vcsgt")]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="TravelPanel" parent="DebugUI/GridContainer" instance=ExtResource("6_c01mt")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SavePanel" parent="DebugUI/GridContainer" instance=ExtResource("7_nxtc6")]
 layout_mode = 2

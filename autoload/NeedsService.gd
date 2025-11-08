@@ -10,6 +10,9 @@ const ENERGY_PER_MIN := -0.03
 const REST_GAIN_PER_MIN := 0.5
 const EAT_GAIN := 25.0
 
+const PRACTICE_ENERGY_COST_PER_MIN := 0.10
+const PRACTICE_HUNGER_COST_PER_MIN := 0.08
+
 # states globals
 
 const HURT_HUNGER := 100.0
@@ -75,3 +78,11 @@ func compute_intensity(agent_id:StringName) -> float:
 	var e_factor := lerpf(0.5, 1.5, energy / 100.0)
 	var h_malus := lerpf(1.0, 0.8, clampf(hunger / 100.0, 0.0, 1.0))
 	return clampf(e_factor * h_malus, 0.25, 2.0)
+
+func apply_activity_cost(agent_id:StringName, minutes:int, effort:float=1.0) -> void:
+	if minutes <= 0: return
+	var e_delta := - PRACTICE_ENERGY_COST_PER_MIN * minutes * effort
+	var h_delta := PRACTICE_HUNGER_COST_PER_MIN * minutes * effort
+	_add_need(agent_id, &"energy", e_delta)
+	_add_need(agent_id, &"hunger", h_delta)
+	_update_status(agent_id)

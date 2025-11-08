@@ -5,6 +5,14 @@ signal agent_changed(agenti_id: StringName)
 
 var _agents: Dictionary = {}
 
+func dump() -> Dictionary:
+	return {"agents": _agents.duplicate(true)}
+
+func restore(d: Dictionary) -> void:
+	_agents = d.get("agents", {}).duplicate(true)
+	for id in _agents.keys():
+		emit_signal("agent_changed", id)
+
 # -- public API --
 
 func create_agent(agent_name: String) -> StringName:

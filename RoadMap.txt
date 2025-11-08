@@ -1,0 +1,112 @@
+Les 8 piliers à ajouter tôt (compatibles avec ce qu’on a)
+
+1. Simulation Kernel
+
+Un SimService dédié (Autoload) avec un tick fixe (ex. 2–10 Hz) séparé du rendu.
+
+Tous les systèmes (économie, mobilité, agents) s’abonnent au tick, pas au _process.
+
+Objectif : déterminisme, perf, et facilité de pause/avance rapide.
+
+2. Registry & IDs
+
+IdService qui génère des UID pour tout (agents, lieux, chansons, enregistrements, objets).
+
+Repos simples : AgentRepo, VenueRepo, SongRepo, RecordingRepo (hashmap UID→Resource/State).
+
+Ça t’évite les “NodePath fragiles” et rend la sauvegarde triviale.
+
+3. Économie centralisée (banque)
+
+EconomyService avec comptes (id→solde) et transactions typées (time-stamped).
+
+Les agents (PNJ ou joueur) référencent un account_id, pas un “wallet” local.
+
+On pourra plus tard faire des banques, intérêts, impayés, etc. sans toucher au reste.
+
+4. Mobilité = Graphe multi-couches (pas de TSP bloquant)
+
+Un graph de navigation par couches :
+walk_graph (rues/trottoirs), metro_graph (stations/lignes), road_graph (véhicules).
+
+Chaque déplacement = A* sur le graphe pertinent, et transfers entre couches (marche → station → métro → marche).
+
+Pour des tournées (multi-arrêts), pas besoin d’un TSP exact : heuristiques (nearest-neighbor + 2-opt, insertion gloutonne, ou “rolling replan” à chaque nouvel objectif).
+
+En monde vivant, l’optimal théorique n’a pas de valeur si l’état change ; vise du “good enough + rapide”.
+
+5. Scheduler/Agenda événementiel
+
+On l’a esquissé : un Scheduler qui déclenche gigs, pratiques, trajets, jobs à l’heure.
+
+Base de la vie de la ville : chacun a un calendrier (agents + systèmes).
+
+6. Modèle Musique : Compositions ≠ Enregistrements
+
+Deux entités distinctes reliées :
+
+Song (composition, auteur(s), tonalité, structure, droits, tags)
+
+Recording (prise, interprètes, studio, date, mix, ISRC-like).
+
+Arrangement optionnel entre les deux (cover, remix) → référence la Song + métadonnées d’arrangement.
+
+Album = collection ordonnée de Recording + pochette/merch.
+
+Tout est ID-based, pas par chemins de nodes.
+
+7. Agents = besoins + Utility AI + Planification légère
+
+Démarrer Utility AI (scores) + agenda.
+
+Plus tard, introduire objectifs (GOAP light) par-dessus sans casser.
+
+8. Sauvegarde versionnée
+
+SaveService stocke un schema_version et des sections (sim, economy, agents, content_db…), pour migrer proprement.
+
+
+
+
+Pipeline “ville procédurale” viable
+
+Graine (seed) → Graphe logique
+
+Génère un graphe de rues (nœuds = intersections, arcs = segments, tags: vitesse, trottoir, sens).
+
+Place stations métro et lignes sur un graphe séparé.
+
+Génère parcelles et zonage (résidentiel/commercial/industriel/culturel).
+
+Remplissage/placement
+
+Place des Venues, Studios, Shops, Banques, Apparts selon le zonage et règles.
+
+Chaque lieu = un blueprint (Resource) + une scène intérieure streamée à la demande (TPS).
+
+Streaming/chunking
+
+Découpe la ville en chunks (grilles) ; garde actifs ceux autour de la caméra/du joueur.
+
+Les agents lointains passent en simulation abstraite (statistiques/événements, pas d’animations).
+
+Nav Mesh / Graph
+
+Pour piétons/voitures : chemins = A* sur graphe (ou navmesh + graph bridging).
+
+Pour métro : A* sur le graphe métro, avec coût d’attente (horaire).
+
+
+
+
+Roadmap en paliers (chaque palier jouable)
+
+Palier 0 (fait) : EventBus, TimeService, HUD, Song/Instrument, gig simple.
+Palier 1 (noyau sim) : SimService (tick), IdService, AgentRepo, EconomyService (comptes/transactions), Scheduler.
+Palier 2 (mobilité & ville light) : graphe piéton + un mini métro, A* multi-couches, 1–2 quartiers procéduraux, streaming simple.
+Palier 3 (musique sérieuse) : SongRepo, RecordingRepo, “cover/remix” via Arrangement, simple DB consultable en jeu.
+Palier 4 (agents vivants) : Utility AI + agendas (travail/pratique/gig/transport), besoins/énergie/humeur, économie commune.
+Palier 5 (UX avancée musique) : mode simple (presets auto), mode avancé (piano roll minimal), studio d’enregistrement basique.
+Palier 6+ : crime/drogues/merch/design, véhicules, TPS intérieurs détaillés, etc.
+
+Chaque palier n’écrase pas le précédent : on ajoute un service ou une couche, on branche aux signaux, on stocke par ID, on sauvegarde versionnée.

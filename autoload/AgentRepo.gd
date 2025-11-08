@@ -74,3 +74,12 @@ func set_ag_status(agent_id: StringName, status: StringName) -> void:
 	if not _agents.has(agent_id): return
 	_agents[agent_id]["status"] = status
 	emit_signal("agent_changed", agent_id)
+
+#helpers
+
+func find_agent_by_account(account_id:StringName) -> StringName:
+	for id in _agents.keys():
+		var a = _agents[id]
+		if StringName(a.get("account_id", StringName())) == account_id:
+			return id
+	return StringName()

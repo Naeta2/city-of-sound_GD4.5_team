@@ -34,7 +34,6 @@ func restore(d: Dictionary) -> void:
 			meta["pos"] = Vector2(float(arr[0]), float(arr[1]))
 		p["meta"] = meta
 		_places[p["id"]] = p
-		emit_signal("place_changed", p["id"])
 
 
 # -- api
@@ -68,7 +67,7 @@ func remove(place_id: StringName) -> void:
 	_places.erase(place_id)
 	emit_signal("place_removed", place_id)
 
-func list_id(p_type: StringName = StringName()) -> Array[StringName]:
+func list_ids(p_type: StringName = StringName()) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for id in _places.keys():
 		if p_type == StringName() or _places[id]["type"] == p_type:

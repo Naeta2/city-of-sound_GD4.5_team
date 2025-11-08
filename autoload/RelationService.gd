@@ -24,7 +24,7 @@ const DECAY_PER_DAY := {
 	"awareness": 0.2
 }
 
-const KNOWS_THRESHOLDS := 5.0
+const KNOWS_THRESHOLD := 5.0
 
 #storage: key = "A|B" -> {trust:float,liking:float.......}
 var _edges: Dictionary = {}
@@ -86,7 +86,7 @@ func get_val(a: StringName, b: StringName, key: String) -> float:
 #helpers
 
 func knows(a: StringName, b: StringName) -> bool:
-	return get_val(a, b, "awareness") >= KNOWS_THRESHOLDS
+	return get_val(a, b, "awareness") >= KNOWS_THRESHOLD
 
 #meeting/direct interaction. Call in mirror to symetrize
 func meet(a: StringName, b: StringName, liking_seed: float = 0.0, trust_seed: float = 0.0) -> void:

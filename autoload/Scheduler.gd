@@ -34,8 +34,8 @@ func restore(d: Dictionary) -> void:
 		var pay = e.get("payload", {})
 		if typeof(pay) == TYPE_DICTIONARY:
 			if pay.has("place_id"): pay["place_id"] = StringName(pay["place_id"])
-			if pay.has("venue_account_id"): pay["venue_account_id"] = StringName(pay["venue_account_id"])
-			if pay.has("player_account_id"): pay["player_account_id"] = StringName(pay["player_account_id"])
+			if pay.has("from_agent_account_id"): pay["from_agent_account_id"] = StringName(pay["from_agent_account_id"])
+			if pay.has("to_agent_account_id"): pay["to_agent_account_id"] = StringName(pay["to_agent_account_id"])
 			e["payload"] = pay
 		_events.append(_sanitize_event(e))
 	_events.sort_custom(func(a,b): return int(a["start"]) < int(b["start"]))
@@ -51,15 +51,15 @@ func restore(d: Dictionary) -> void:
 				var pay = e.get("payload", {})
 				if typeof(pay) == TYPE_DICTIONARY:
 					if pay.has("place_id"):          pay["place_id"]          = StringName(pay["place_id"])
-					if pay.has("venue_account_id"):  pay["venue_account_id"]  = StringName(pay["venue_account_id"])
-					if pay.has("player_account_id"): pay["player_account_id"] = StringName(pay["player_account_id"])
+					if pay.has("from_agent_account_id"):  pay["from_agent_account_id"]  = StringName(pay["from_agent_account_id"])
+					if pay.has("to_agent_account_id"): pay["to_agent_account_id"] = StringName(pay["to_agent_account_id"])
 					e["payload"] = pay
 				hist.append(_sanitize_event(e))
 		_history = hist
 
 func schedule(ev:Dictionary) -> void:
 	_events.append(_with_defaults(_sanitize_event(ev)))
-	_events.sort_custom(func(a,b): return a.start < b.start)
+	_events.sort_custom(func(a,b): return int(a.get("start", 0)) < int(b.get("start", 0)))
 	emit_signal("events_changed")
 
 func _on_minute(now:int) -> void:
@@ -93,7 +93,7 @@ func _can_fire(ev: Dictionary) -> bool:
 	if bool(ev.get("requires_presence", false)):
 		var place_id: StringName = ev.get("payload", {}).get("place_id", StringName())
 		var status: StringName = StringName(ev.get("status", &"scheduled"))
-		if place_id == StringName() or status == "missed":
+		if place_id == StringName() or status == &"missed":
 			return false
 		return PresenceService.is_at(ev["owner_id"], place_id)
 	return true
@@ -216,7 +216,7 @@ func schedule_gig_by_place(owner_id: StringName, start: int, place_id: StringNam
 	if from_acct == StringName():
 		var p := PlaceRepo.get_place(place_id)
 		var meta = p.get("meta", {})
-		if meta.has("accound_id"):
+		if meta.has("account_id"):
 			from_acct = StringName(meta["account_id"])
 	if to_acct == StringName():
 		var ag := AgentRepo.ag_get(owner_id)

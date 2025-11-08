@@ -1,7 +1,7 @@
 extends Node
 
 signal agent_created(agent_id: StringName)
-signal agent_changed(agenti_id: StringName)
+signal agent_changed(agent_id: StringName)
 
 var _agents: Dictionary = {}
 

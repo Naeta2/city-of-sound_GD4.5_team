@@ -34,7 +34,7 @@ func _add_need(agent_id:StringName, need:StringName, delta:float) -> void :
 	var nv := clampf(v + delta, 0.0, 100)
 	if nv != v:
 		AgentRepo.set_ag_need(agent_id, need, nv)
-		emit_signal("need_changed", agent_id, nv)
+		emit_signal("need_changed", agent_id, need, nv)
 
 func eat(agent_id:StringName, amount:float = EAT_GAIN) -> void:
 	var v := AgentRepo.get_ag_need(agent_id, &"hunger")
@@ -62,7 +62,7 @@ func _update_status(agent_id:StringName) -> void:
 	
 	if hunger >= HURT_HUNGER or energy <= HURT_ENERGY:
 		nxt = &"hurt"
-	if hunger < RECOVER_HUNGER or energy > RECOVER_ENERGY:
+	elif hunger < RECOVER_HUNGER or energy > RECOVER_ENERGY:
 		nxt = &"healthy"
 	
 	if nxt != cur:

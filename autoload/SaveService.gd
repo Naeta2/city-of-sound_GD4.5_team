@@ -30,16 +30,19 @@ func save(path: String = DEFAULT_PATH) -> bool:
 func load(path: String = DEFAULT_PATH) -> bool:
 	if not FileAccess.file_exists(path):
 		push_warning("No save file at " + path)
+		emit_signal("load_done", path, false)
 		return false
 	var f := FileAccess.open(path, FileAccess.READ)
 	if f == null:
 		push_error("Load failed: cannot open " + path)
+		emit_signal("load_done", path, false)
 		return false
 	var txt := f.get_as_text()
 	f.close()
 	var parsed = JSON.parse_string(txt)
 	if typeof(parsed) != TYPE_DICTIONARY:
 		push_error("Load failed: invalid JSON")
+		emit_signal("load_done", path, false)
 		return false
 	var schema := int(parsed.get("schema", 0))
 	if schema != SAVE_SCHEMA:

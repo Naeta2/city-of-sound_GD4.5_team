@@ -288,7 +288,7 @@ pure data
 ### Persistence
 
 - `dump() -> {"places": {...}}` (Vector2 serialized as `[x,y]`)
-- `` (rebuilds Vector2; StringName coercions)
+- `restore(d)` (rebuilds Vector2; StringName coercions)
 
 ## SaveService
 

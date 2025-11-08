@@ -205,7 +205,39 @@ func schedule_sleep(owner_id: StringName, start_minutes: int, duration_minutes :
 	schedule(end_ev)
 	return {"end_id": end_ev["id"]}
 
+func schedule_travel_by_place(owner_id: StringName, to_place_id: StringName, depart_at: int, mode: StringName = &"walk") -> Dictionary:
+	var from_id := PresenceService.get_location(owner_id)
+	var duration := 20
+	if from_id != StringName() and Engine.has_singleton("PlaceRepo"):
+		duration = PlaceRepo.estimate_travel_minutes(from_id, to_place_id, mode)
+	return schedule_travel(owner_id, to_place_id, depart_at, duration)
 
+func schedule_gig_by_place(owner_id: StringName, start: int, place_id: StringName, payout: int, from_acct: StringName= StringName(), to_acct: StringName=StringName()) -> StringName:
+	if from_acct == StringName():
+		var p := PlaceRepo.get_place(place_id)
+		var meta = p.get("meta", {})
+		if meta.has("accound_id"):
+			from_acct = StringName(meta["account_id"])
+	if to_acct == StringName():
+		var ag := AgentRepo.ag_get(owner_id)
+		if not ag.is_empty() and ag.has("account_id"):
+			to_acct = StringName(ag["account_id"])
+	var ev := {
+		"id": IdService.new_id("ev"),
+		"owner_id": owner_id,
+		"type": &"gig",
+		"start": int(start),
+		"requires_presence": true,
+		"status": &"scheduled",
+		"payload": {
+			"place_id": place_id,
+			"from_agent_account_id": from_acct,
+			"to_agent_account_id": to_acct,
+			"payout": int(payout)
+		}
+	}
+	schedule(ev)
+	return ev["id"]
 
 #-- helpersq
 

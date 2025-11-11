@@ -213,10 +213,17 @@ func schedule_travel_by_place(owner_id: StringName, to_place_id: StringName, dep
 	return schedule_travel(owner_id, to_place_id, depart_at, duration)
 
 func schedule_gig_by_place(owner_id: StringName, start: int, place_id: StringName, payout: int, from_acct: StringName= StringName(), to_acct: StringName=StringName()) -> StringName:
-	if from_acct == StringName():
+	if from_acct == StringName() and Engine.has_singleton("PlaceRepo") :
 		var p := PlaceRepo.get_place(place_id)
 		var meta = p.get("meta", {})
-		if meta.has("account_id"):
+		if meta.has("owner_agent_id") and Engine.has_singleton("PlaceRepo"):
+			var owner_agent_id := StringName(meta["owner_agent_id"])
+			var owner_ag := AgentRepo.ag_get(owner_agent_id)
+			if not owner_ag.is_empty():
+				var owner_acct := StringName(owner_ag.get("account_id", StringName()))
+				if owner_acct != StringName():
+					from_acct = owner_acct
+		if from_acct == StringName() and meta.has("account_id"):
 			from_acct = StringName(meta["account_id"])
 	if to_acct == StringName():
 		var ag := AgentRepo.ag_get(owner_id)

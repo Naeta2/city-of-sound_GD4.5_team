@@ -35,7 +35,6 @@ func restore(d: Dictionary) -> void:
 		p["meta"] = meta
 		_places[p["id"]] = p
 
-
 # -- api
 
 func create_place(p_type: StringName, p_name: String, meta: Dictionary={}) -> StringName:
@@ -93,3 +92,14 @@ func estimate_travel_minutes(from_id: StringName, to_id: StringName, mode: Strin
 	var dist := (pa as Vector2).distance_to(pb as Vector2) # in arbitrary meter
 	var speed := (SPEED_METRO_M_PER_MIN if mode == &"metro" else SPEED_WALK_M_PER_MIN)
 	return max(1, int(round(dist / speed)))
+
+func set_place_owner(place_id: StringName, owner_agent_id: StringName) -> void:
+	if not _places.has(place_id): return
+	_places[place_id]["meta"]["owner_agent_id"] = owner_agent_id
+	emit_signal("place_changed", place_id)
+
+func get_place_owner(place_id: StringName) -> StringName:
+	var p:= get_place(place_id)
+	var meta = p.get("meta", {})
+	return StringName(meta.get("owner_agent_id", StringName()))
+	

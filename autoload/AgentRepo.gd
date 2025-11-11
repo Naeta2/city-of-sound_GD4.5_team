@@ -24,7 +24,8 @@ func create_agent(agent_name: String) -> StringName:
 		"account_id": StringName(),
 		"skills": {"guitar": 0.2},
 		"needs": {"energy": 70, "hunger": 30},
-		"status": &"healthy"
+		"status": &"healthy",
+		"roles": {}
 	}
 	emit_signal("agent_created", id)
 	return id
@@ -74,6 +75,59 @@ func set_ag_status(agent_id: StringName, status: StringName) -> void:
 	if not _agents.has(agent_id): return
 	_agents[agent_id]["status"] = status
 	emit_signal("agent_changed", agent_id)
+
+#-- orgs
+
+func create_org(org_name: String) -> StringName:
+	var id := IdService.new_id("org")
+	_agents[id] = {
+		"id":id,
+		"kind":&"org",
+		"name":org_name,
+		"account_id": StringName(),
+		"skills": {},
+		"needs": {},
+		"status": &"healthy",
+		"roles": {}, #A ->org: map org_id -> role (person side)
+		"members": {} #org -> A: map agent_id->role (org side)
+	}
+	emit_signal("agent_created", id)
+	return id
+
+func is_org(agent_id: StringName) -> bool:
+	var a := ag_get(agent_id)
+	return not a.is_empty() and StringName(a.get("kind", &"")) == &"org"
+
+#role of A in org
+func set_role(agent_id: StringName, org_id: StringName, role: StringName) -> void:
+	if not _agents.has(agent_id): return
+	if not _agents.has(org_id): return
+	#person side
+	var pa = _agents[agent_id]
+	var roles = pa.get("roles", {})
+	roles[org_id] = role
+	pa["roles"] = roles
+	_agents[agent_id] = pa
+	emit_signal("agent_changed", agent_id)
+	#org side
+	var oa = _agents[org_id]
+	var mem = oa.get("members", {})
+	mem[agent_id] = role
+	oa["members"] = mem
+	_agents[org_id] = oa
+	emit_signal("agent_changed", org_id)
+
+func get_role(agent_id: StringName, org_id:StringName) -> StringName:
+	var a := ag_get(agent_id)
+	var roles = a.get("roles", {})
+	return StringName(roles.get(org_id, StringName()))
+
+func get_org_members(org_id: StringName) -> Dictionary:
+	var org := ag_get(org_id)
+	return org.get("members", {}) #agent_id : role
+
+func set_org_owner(org_id: StringName, owner_agent_id: StringName) -> void:
+	set_role(owner_agent_id, org_id, &"owner")
 
 #helpers
 

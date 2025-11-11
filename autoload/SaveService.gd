@@ -15,7 +15,8 @@ func save(path: String = DEFAULT_PATH) -> bool:
 		"presence": PresenceService.dump(),
 		"places": PlaceRepo.dump(),
 		"scheduler": Scheduler.dump(),
-		"relations": RelationService.dump()
+		"relations": RelationService.dump(),
+		"inventory": InventoryService.dump(),
 	}
 	var txt := JSON.stringify(data, "\t")
 	var f := FileAccess.open(path, FileAccess.WRITE)
@@ -54,5 +55,6 @@ func load(path: String = DEFAULT_PATH) -> bool:
 	PlaceRepo.restore(parsed.get("places", {}))
 	Scheduler.restore(parsed.get("scheduler", {}))
 	RelationService.restore(parsed.get("relations", {}))
+	InventoryService.restore(parsed.get("inventory", {}))
 	emit_signal("load_done", path, true)
 	return true

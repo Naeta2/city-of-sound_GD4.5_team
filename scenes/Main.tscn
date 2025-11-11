@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://d26tut84w58hm"]
+[gd_scene load_steps=10 format=3 uid="uid://d26tut84w58hm"]
 
 [ext_resource type="PackedScene" uid="uid://bdir0vj7v6k12" path="res://scenes/ui/debug/IdPanel.tscn" id="1_elqb8"]
 [ext_resource type="Script" uid="uid://cisoijx1xo6he" path="res://scenes/main.gd" id="1_jlsqs"]
@@ -8,11 +8,13 @@
 [ext_resource type="PackedScene" uid="uid://cgwi83k45on8g" path="res://scenes/ui/debug/SchedulerPanel.tscn" id="5_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://44atvkp4la8b" path="res://scenes/ui/debug/TravelPanel.tscn" id="6_c01mt"]
 [ext_resource type="PackedScene" uid="uid://k43odqg8kln3" path="res://scenes/ui/debug/SavePanel.tscn" id="7_nxtc6"]
+[ext_resource type="PackedScene" uid="uid://bgc7p1s0181m4" path="res://scenes/ui/debug/CityRenderer.tscn" id="9_q8u5g"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_jlsqs")
 
 [node name="DebugUI" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,3 +65,5 @@ size_flags_vertical = 3
 
 [node name="SavePanel" parent="DebugUI/GridContainer" instance=ExtResource("7_nxtc6")]
 layout_mode = 2
+
+[node name="City" parent="." instance=ExtResource("9_q8u5g")]

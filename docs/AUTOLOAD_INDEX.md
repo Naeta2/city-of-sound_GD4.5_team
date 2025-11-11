@@ -9,3 +9,4 @@
 - Scheduler.gd : https://raw.githubusercontent.com/Naeta2/city-of-sound_GD4.5_team/refs/heads/main/autoload/Scheduler.gd
 - SkillsService.gd : https://raw.githubusercontent.com/Naeta2/city-of-sound_GD4.5_team/refs/heads/main/autoload/SkillsService.gd
 - TimeService.gd :  https://raw.githubusercontent.com/Naeta2/city-of-sound_GD4.5_team/refs/heads/main/autoload/TimeService.gd
+- WorldSeed.gd : https://raw.githubusercontent.com/Naeta2/city-of-sound_GD4.5_team/refs/heads/main/autoload/WorldSeed.gd

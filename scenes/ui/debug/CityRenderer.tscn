@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgc7p1s0181m4"]
+
+[ext_resource type="Script" uid="uid://h3s5yi6j6gv8" path="res://scenes/ui/debug/city_renderer.gd" id="1_p070f"]
+[ext_resource type="Script" uid="uid://b4ana3djbn16e" path="res://scenes/ui/debug/metro_renderer.gd" id="2_pvwhy"]
+[ext_resource type="Script" uid="uid://wgutxydyqle3" path="res://scenes/ui/debug/camera_2d.gd" id="2_s4udn"]
+[ext_resource type="Script" uid="uid://bv1ihfen2e6pn" path="res://scenes/ui/debug/place_renderer.gd" id="3_pvwhy"]
+
+[node name="City" type="Node2D"]
+
+[node name="CityRenderer" type="Node2D" parent="."]
+script = ExtResource("1_p070f")
+
+[node name="MetroRenderer" type="Node2D" parent="."]
+script = ExtResource("2_pvwhy")
+
+[node name="PlaceRenderer" type="Node2D" parent="."]
+script = ExtResource("3_pvwhy")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_s4udn")
+
+[node name="Button" type="Button" parent="Camera2D"]
+offset_left = 435.0
+offset_top = 258.0
+offset_right = 551.0
+offset_bottom = 300.0
+text = "generate city"
+
+[node name="rerollBtn" type="Button" parent="Camera2D"]
+offset_left = 359.0
+offset_top = 262.0
+offset_right = 423.0
+offset_bottom = 290.0
+text = "reroll"
+
+[node name="LineEdit" type="LineEdit" parent="Camera2D"]
+offset_left = 315.0
+offset_top = 218.0
+offset_right = 563.0
+offset_bottom = 249.0
+
+[node name="saveBtn" type="Button" parent="Camera2D"]
+offset_left = 288.0
+offset_top = 262.0
+offset_right = 352.0
+offset_bottom = 295.0
+text = "save"
+
+[node name="OptionButton" type="OptionButton" parent="Camera2D"]
+offset_left = 56.0
+offset_top = 218.0
+offset_right = 227.0
+offset_bottom = 249.0
+
+[node name="loadBtn" type="Button" parent="Camera2D"]
+offset_left = 243.0
+offset_top = 219.0
+offset_right = 304.0
+offset_bottom = 250.0
+text = "load"
+
+[connection signal="pressed" from="Camera2D/Button" to="Camera2D" method="_on_button_pressed"]
+[connection signal="pressed" from="Camera2D/rerollBtn" to="Camera2D" method="_on_reroll_btn_pressed"]
+[connection signal="pressed" from="Camera2D/saveBtn" to="Camera2D" method="_on_save_btn_pressed"]
+[connection signal="pressed" from="Camera2D/loadBtn" to="Camera2D" method="_on_load_btn_pressed"]

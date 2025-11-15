@@ -64,6 +64,7 @@ func _on_button_pressed() -> void:
 	#}
 	#CityService.generate(_seed, Vector2i(x,y), params)
 	CityService.generate_from_exports()
+	CityService.sync_places_from_repo()
 
 
 func _on_reroll_btn_pressed() -> void:

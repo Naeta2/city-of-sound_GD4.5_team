@@ -26,6 +26,11 @@ extends Node
 @export var ex_interchange_join_dist:float = 5.0     # rayon pour fusion/partage entre 2 lignes
 @export var ex_hub_join_dist:float = 4.0             # rayon pour promouvoir un hub multi-lignes
 
+@export_group("Grid / World mapping")
+@export var ex_cell_px:int = 16
+@export var ex_world_origin:Vector2 = Vector2.ZERO
+@export var ex_cell_size_m:float = 10.0
+
 signal city_changed
 
 #directions bitmask
@@ -107,7 +112,14 @@ func suggest_place_cell(min_spacing:int=2, tries:int=200) -> Vector2i:
 			return Vector2i(x,y)
 	return Vector2i(-1,-1)
 
+func world_to_cell(world_pos: Vector2) -> Vector2i:
+	var rel := world_pos - ex_world_origin / ex_cell_size_m
+	var cx = clamp(roundi(rel.x), 0, max(0, _w - 1))
+	var cy = clamp(roundi(rel.y), 0, max(0, _h - 1))
+	return Vector2i(cx, cy)
 
+func cell_to_world(cell: Vector2i) -> Vector2 :
+	return ex_world_origin + Vector2(cell) * ex_cell_size_m
 
 
 #------------------ gen -------------------------
@@ -173,15 +185,58 @@ func generate(s:int, size:Vector2i, params: Dictionary = {}) -> void:
 
 #-- places
 
-func sync_places_from_repo():
-	clear_places()
-	for pid in PlaceRepo.list_ids():
-		var p = PlaceRepo.get_place(pid)
-		var n = p.get("name", String(pid))
-		if not p["meta"].has("pos"): continue
-		var cell := Vector2i(p["meta"]["pos"])
-		if cell.x >= 0:
-			add_place(pid, n, cell)
+func sync_places_from_repo(preserve_existing: bool = false, write_back: bool = true) -> void:
+	if not preserve_existing:
+		_places.clear()
+	var ids := []
+	if PlaceRepo.has_method("list_ids"):
+		ids = PlaceRepo.list_ids()
+	elif PlaceRepo.has_method("get_all_place_ids"):
+		ids = PlaceRepo.get_all_place_ids()
+	else:
+		push_warning("PlaceRepo: no ids getter (list_ids / get_all_place_ids).")
+		emit_signal("city_changed")
+		return
+	for pid in ids:
+		if not PlaceRepo.has_method("get_place"):
+			continue
+		var p := PlaceRepo.get_place(pid)
+		var n = String(p.get("name", String(pid)))
+		var meta = p.get("meta", {})
+		var cell := Vector2i(-1, -1)
+		if typeof(meta) == TYPE_DICTIONARY and meta.has("grid_cell"):
+			cell = _parse_vec2i(meta["grid_cell"], Vector2i(-1, -1))
+		if (cell.x < 0 or cell.y < 0) and typeof(meta) == TYPE_DICTIONARY and meta.has("pos"):
+			var pos = meta["pos"]
+			match typeof(pos):
+				TYPE_VECTOR2:
+					cell = world_to_cell(pos)
+				TYPE_VECTOR2I:
+					cell = pos
+				_:
+					cell = _parse_vec2i(pos, Vector2i(-1, -1))
+		if cell.x < 0 or cell.y < 0:
+			cell = suggest_place_cell()
+		if not _is_valid_place_cell(cell):
+			cell = _nearest_valid_place_cell(cell, 12)
+		if cell.x < 0 or cell.y < 0:
+			push_warning("Could not place '%s' on grid." % [name])
+			continue
+		var dup := false
+		for e in _places:
+			if e["cell"] == cell:
+				dup = true
+				break
+		if dup:
+			var alt := _nearest_valid_place_cell(cell + Vector2i(1, 0), 8)
+			if alt.x >= 0:
+				cell = alt
+			else:
+				continue
+		_places.append({ "id": StringName(pid), "name": n, "cell": cell })
+		if write_back and PlaceRepo.has_method("set_place_meta_value"):
+			PlaceRepo.set_place_meta_value(pid, "grid_cell", [cell.x, cell.y])
+	emit_signal("city_changed")
 
 
 #--road
@@ -1056,3 +1111,19 @@ func _parse_vec2i(v, fallback: Vector2i) -> Vector2i:
 		if parts.size() >= 2:
 			return Vector2i(int(parts[0].strip_edges()), int(parts[1].strip_edges()))
 	return fallback
+
+func _is_valid_place_cell(c: Vector2i) -> bool :
+	if c.x < 0 or c.y < 0 or c.x >= _w or c.y >= _h: return false
+	if _is_road(c.x,c.y): return false
+	return true
+
+func _nearest_valid_place_cell(from: Vector2i, max_radius:int = 8) -> Vector2i:
+	if _is_valid_place_cell(from): return from
+	for r in range(1, max_radius + 1):
+		for dy in range(-r, r+1):
+			for dx in range(-r, r+1):
+				if abs(dx) != r and abs(dy) != r: continue
+				var p := Vector2i(from.x + dx, from.y + dy)
+				if p.x < 0 or p.y <0 or p.x >= _w or p.y >= _h : continue
+				if _is_valid_place_cell(p) : return p
+	return Vector2i(-1, -1)
